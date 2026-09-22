@@ -35,13 +35,23 @@ const {
   ensureLeague,
 } = require("./office");
 
+const os = require("os");
+
 const app = express();
 const PORT = process.env.PORT || 3000;
-const DATA_FILE = path.join(__dirname, "club.json");
-const USERS_FILE = path.join(__dirname, "users.json");
+const FRONTEND_DIR = path.join(__dirname, "..", "frontend");
+const DATA_DIR = process.env.VERCEL ? path.join(os.tmpdir(), "myclub") : __dirname;
+if (process.env.VERCEL) {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+}
+const DATA_FILE = path.join(DATA_DIR, "club.json");
+const USERS_FILE = path.join(DATA_DIR, "users.json");
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "..", "frontend")));
+app.use(express.static(FRONTEND_DIR));
+app.get("/", (_req, res) => {
+  res.sendFile(path.join(FRONTEND_DIR, "index.html"));
+});
 
 const sessions = new Map();
 const captchaChallenges = new Map();
@@ -204,7 +214,11 @@ function getClub() {
 }
 
 function writeClub(club) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(club, null, 2));
+  try {
+    fs.writeFileSync(DATA_FILE, JSON.stringify(club, null, 2));
+  } catch (error) {
+    console.error("Could not write club data:", error.message);
+  }
 }
 
 function awardPrizes(club) {
@@ -241,7 +255,11 @@ function readUsers() {
 }
 
 function writeUsers(users) {
-  fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+  try {
+    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+  } catch (error) {
+    console.error("Could not write users:", error.message);
+  }
 }
 
 function hashPassword(password, salt) {
@@ -1112,6 +1130,10 @@ app.post("/api/store/buy", requireAuth, (req, res) => {
   res.json({ club, log: `Purchased ${item.name}.` });
 });
 
-app.listen(PORT, () => {
-  console.log(`Club running at http://localhost:${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Club running at http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
