@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n="titleReset">Set new password</title>
+    <link rel="stylesheet" href="/styles.css?v=dash" />
+  </head>
+  <body class="is-public">
+    <div class="date-bar">
+      <time id="gregorian-date"></time>
+      <span class="date-convert">
+        <label for="calendar-select" data-i18n="convertLabel">Convert</label>
+        <select id="calendar-select"></select>
+      </span>
+      <p id="converted-date"></p>
+    </div>
+    <div class="lang-picker">
+      <label for="language-select" data-i18n="langLabel">Language</label>
+      <select id="language-select"></select>
+    </div>
+    <div class="shell">
+      <section class="panel auth-panel">
+        <p class="tagline" data-i18n="account">Account</p>
+        <h1 data-i18n="setNewPassword">Set a new password</h1>
+        <p class="lede">Choose a new password from the link we sent to your email.</p>
+        <form id="reset-form" autocomplete="on">
+          <label for="reset-password" data-i18n="createPassword">Create a password</label>
+          <input id="reset-password" name="password" type="password" required minlength="8" autocomplete="new-password" />
+          <p class="hint">Use letters, numbers, and a special character (at least 8 characters).</p>
+          <label for="reset-confirm" data-i18n="confirmPassword">Confirm password</label>
+          <input id="reset-confirm" name="confirm" type="password" required minlength="8" autocomplete="new-password" />
+          <button type="submit">Save new password</button>
+        </form>
+        <p id="auth-status" class="status" role="status"></p>
+        <p class="auth-back">
+          <a href="/login.html" data-i18n="login">Login</a>
+          ·
+          <a href="/" data-i18n="backHome">Back to home</a>
+        </p>
+      </section>
+    </div>
+    <script src="/languages.js"></script>
+    <script src="/i18n.js"></script>
+    <script src="/calendars.js"></script>
+    <script src="/chrome.js?v=dash"></script>
+    <script src="/auth.js"></script>
+  </body>
+</html>

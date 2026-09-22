@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n="titleCreate">Create account</title>
+    <link rel="stylesheet" href="/styles.css?v=dash" />
+  </head>
+  <body class="is-public">
+    <div class="date-bar">
+      <time id="gregorian-date"></time>
+      <span class="date-convert">
+        <label for="calendar-select" data-i18n="convertLabel">Convert</label>
+        <select id="calendar-select"></select>
+      </span>
+      <p id="converted-date"></p>
+    </div>
+    <div class="lang-picker">
+      <label for="language-select" data-i18n="langLabel">Language</label>
+      <select id="language-select"></select>
+    </div>
+    <div class="shell">
+      <section class="panel auth-panel">
+        <p class="tagline" data-i18n="registration">Registration</p>
+        <h1 data-i18n="createAccount">Create account</h1>
+        <form id="signup-form" autocomplete="on">
+          <label for="signup-email" data-i18n="email">Email address</label>
+          <input id="signup-email" name="email" type="email" required maxlength="120" autocomplete="email" />
+          <label for="signup-password" data-i18n="createPassword">Create a password</label>
+          <input id="signup-password" name="password" type="password" required minlength="8" autocomplete="new-password" />
+          <p class="hint" id="password-hint">Use letters, numbers, and a special character (at least 8 characters).</p>
+          <label for="signup-confirm" data-i18n="confirmPassword">Confirm password</label>
+          <input id="signup-confirm" name="confirm" type="password" required minlength="8" autocomplete="new-password" />
+          <input id="signup-website" class="hp" name="website" type="text" tabindex="-1" autocomplete="off" />
+          <div class="captcha-wrap">
+            <div class="captcha" id="captcha-widget">
+              <label class="captcha-check">
+                <input id="robot-check" type="checkbox" />
+                <span data-i18n="notRobot">I'm not a robot</span>
+              </label>
+              <span class="captcha-badge" data-i18n="captcha">captcha</span>
+            </div>
+            <div class="captcha-challenge" id="captcha-challenge" hidden>
+              <p class="captcha-prompt" id="captcha-prompt">Select every square with a soccer ball</p>
+              <div class="captcha-grid" id="captcha-grid"></div>
+              <button type="button" id="captcha-verify-btn">Verify</button>
+            </div>
+          </div>
+          <button type="submit" id="signup-submit" disabled data-i18n="completeReg">Complete registration</button>
+        </form>
+        <p id="auth-status" class="status" role="status"></p>
+        <p class="auth-back">
+          <a href="/login.html" data-i18n="login">Login</a>
+          ·
+          <a href="/" data-i18n="backHome">Back to home</a>
+        </p>
+      </section>
+    </div>
+    <script src="/languages.js"></script>
+    <script src="/i18n.js"></script>
+    <script src="/calendars.js"></script>
+    <script src="/chrome.js?v=dash"></script>
+    <script src="/auth.js"></script>
+  </body>
+</html>

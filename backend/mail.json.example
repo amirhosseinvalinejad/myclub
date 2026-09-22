@@ -1,0 +1,8 @@
+{
+  "host": "smtp.gmail.com",
+  "port": 587,
+  "secure": false,
+  "user": "your-email@gmail.com",
+  "pass": "your-app-password",
+  "from": "Club <your-email@gmail.com>"
+}

@@ -1,0 +1,14 @@
+{
+  "name": "daylist",
+  "version": "1.0.0",
+  "description": "Build Your Club — Win Tournament — Earn Cash Prizes",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "node --watch backend/server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "nodemailer": "^10.0.10"
+  }
+}
