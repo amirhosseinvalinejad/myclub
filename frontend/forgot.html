@@ -4,26 +4,32 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title data-i18n="titleForgot">Forgot password</title>
-    <link rel="stylesheet" href="/styles.css?v=dash" />
+    <link rel="stylesheet" href="/styles.css?v=datestrip2" />
   </head>
   <body class="is-public">
-    <div class="date-bar">
-      <time id="gregorian-date"></time>
-      <span class="date-convert">
-        <label for="calendar-select" data-i18n="convertLabel">Convert</label>
-        <select id="calendar-select"></select>
-      </span>
-      <p id="converted-date"></p>
-    </div>
-    <div class="lang-picker">
-      <label for="language-select" data-i18n="langLabel">Language</label>
-      <select id="language-select"></select>
-    </div>
+    <header class="glass-topbar">
+      <div class="glass-topbar-inner">
+        <div class="date-strip" id="date-strip" role="list"></div>
+        <div class="glass-topbar-tools">
+          <div class="glass-topbar-date">
+            <span class="date-convert">
+              <label for="calendar-select" data-i18n="convertLabel">Convert</label>
+              <select id="calendar-select"></select>
+            </span>
+            <p id="converted-date"></p>
+          </div>
+          <div class="glass-topbar-lang">
+            <label for="language-select" data-i18n="langLabel">Language</label>
+            <select id="language-select"></select>
+          </div>
+        </div>
+      </div>
+    </header>
     <div class="shell">
       <section class="panel auth-panel">
         <p class="tagline" data-i18n="account">Account</p>
         <h1 data-i18n="forgotPassword">Forgot password</h1>
-        <p class="lede">Enter your account email. We will send a link to set a new password.</p>
+        <p class="lede" data-i18n="forgotLede">Enter your account email. We will send a link to set a new password.</p>
         <form id="forgot-form" autocomplete="on">
           <label for="forgot-email" data-i18n="email">Email address</label>
           <input id="forgot-email" name="email" type="email" required maxlength="120" autocomplete="email" />
@@ -31,7 +37,7 @@
         </form>
         <p id="auth-status" class="status" role="status"></p>
         <p id="mail-preview" class="auth-back" hidden>
-          <a id="mail-preview-link" href="#" target="_blank" rel="noopener">Open the email to set a new password</a>
+          <a id="mail-preview-link" href="#" target="_blank" rel="noopener" data-i18n="openResetMail">Open the email to set a new password</a>
         </p>
         <p class="auth-back">
           <a href="/login.html" data-i18n="login">Login</a>
@@ -41,9 +47,9 @@
       </section>
     </div>
     <script src="/languages.js"></script>
-    <script src="/i18n.js"></script>
+    <script src="/i18n.js?v=datestrip2"></script>
     <script src="/calendars.js"></script>
-    <script src="/chrome.js?v=dash"></script>
-    <script src="/auth.js"></script>
+    <script src="/chrome.js?v=datestrip2"></script>
+    <script src="/auth.js?v=lang1"></script>
   </body>
 </html>

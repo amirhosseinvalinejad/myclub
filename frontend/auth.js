@@ -5,14 +5,6 @@ function setAuthStatus(message) {
   statusEl.textContent = message;
 }
 
-function copy(key, fallback) {
-  if (typeof t !== "function") {
-    return fallback;
-  }
-  const value = t(key);
-  return !value || value === key ? fallback : value;
-}
-
 initChrome();
 
 const loginForm = document.getElementById("login-form");
@@ -51,7 +43,7 @@ if (forgotForm) {
         }),
       });
       setAuthStatus(
-        data.message || "If that email is registered, we sent a link to set a new password."
+        data.message || t("resetSent")
       );
       if (data.previewUrl && previewWrap && previewLink) {
         previewLink.href = data.previewUrl;
@@ -67,24 +59,22 @@ const resetForm = document.getElementById("reset-form");
 if (resetForm) {
   const token = new URLSearchParams(window.location.search).get("token") || "";
   if (!token) {
-    setAuthStatus("This reset link is missing. Request a new one from Login.");
+    setAuthStatus(t("missingReset"));
   }
   resetForm.addEventListener("submit", async (event) => {
     event.preventDefault();
     const password = document.getElementById("reset-password").value;
     const confirm = document.getElementById("reset-confirm").value;
     if (!PASSWORD_RE.test(password)) {
-      setAuthStatus(
-        "Password must be at least 8 characters and include a letter, a number, and a special character."
-      );
+      setAuthStatus(t("errPasswordLen"));
       return;
     }
     if (password !== confirm) {
-      setAuthStatus(copy("passwordsMismatch", "Passwords do not match."));
+      setAuthStatus(t("passwordsMismatch"));
       return;
     }
     if (!token) {
-      setAuthStatus("This reset link is missing. Request a new one from Login.");
+      setAuthStatus(t("missingReset"));
       return;
     }
     try {
@@ -92,7 +82,7 @@ if (resetForm) {
         method: "POST",
         body: JSON.stringify({ token, password }),
       });
-      setAuthStatus("Password updated. You can log in now.");
+      setAuthStatus(t("passwordUpdated"));
       window.setTimeout(() => {
         window.location.href = "/login.html";
       }, 900);
@@ -158,7 +148,7 @@ if (signupForm) {
     resetCaptchaUi();
     const data = await request("/api/captcha");
     captchaId = data.captchaId;
-    promptEl.textContent = data.prompt || "Select every square with a soccer ball";
+    promptEl.textContent = data.prompt || t("captchaPrompt");
     renderTiles(data.tiles || []);
   }
 
@@ -176,7 +166,7 @@ if (signupForm) {
 
   verifyBtn.addEventListener("click", async () => {
     if (!captchaId) {
-      setAuthStatus(copy("confirmRobot", "Confirm you are not a robot."));
+      setAuthStatus(t("confirmRobot"));
       return;
     }
     try {
@@ -209,17 +199,15 @@ if (signupForm) {
     const password = document.getElementById("signup-password").value;
     const confirm = document.getElementById("signup-confirm").value;
     if (!PASSWORD_RE.test(password)) {
-      setAuthStatus(
-        "Password must be at least 8 characters and include a letter, a number, and a special character."
-      );
+      setAuthStatus(t("errPasswordLen"));
       return;
     }
     if (password !== confirm) {
-      setAuthStatus(copy("passwordsMismatch", "Passwords do not match."));
+      setAuthStatus(t("passwordsMismatch"));
       return;
     }
     if (!captchaToken) {
-      setAuthStatus(copy("confirmRobot", "Complete the captcha to prove you are not a robot."));
+      setAuthStatus(t("completeCaptcha"));
       challengeEl.hidden = false;
       return;
     }

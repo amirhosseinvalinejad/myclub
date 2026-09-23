@@ -1130,6 +1130,43 @@ app.post("/api/store/buy", requireAuth, (req, res) => {
   res.json({ club, log: `Purchased ${item.name}.` });
 });
 
+app.post("/api/translate", async (req, res) => {
+  const lang = String(req.body.lang || "en")
+    .trim()
+    .slice(0, 16)
+    .replace(/[^\w-]/g, "");
+  const texts = Array.isArray(req.body.texts) ? req.body.texts.map((item) => String(item || "")).slice(0, 80) : [];
+  if (!lang || lang === "en" || !texts.length) {
+    return res.json({ translations: texts });
+  }
+  const map = { zh: "zh-CN", tw: "zh-TW", he: "iw", jw: "jv" };
+  const target = map[lang] || lang;
+
+  async function translateOne(text) {
+    if (!text.trim()) {
+      return text;
+    }
+    const protectedText = text.replace(/\{(\w+)\}/g, "⟨$1⟩");
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${encodeURIComponent(target)}&dt=t&q=${encodeURIComponent(protectedText)}`;
+    const response = await fetch(url);
+    if (!response.ok) {
+      return text;
+    }
+    const data = await response.json();
+    const out = (data[0] || []).map((part) => part[0] || "").join("");
+    return out.replace(/⟨(\w+)⟩/g, "{$1}") || text;
+  }
+
+  const translations = [];
+  const batch = 12;
+  for (let i = 0; i < texts.length; i += batch) {
+    const slice = texts.slice(i, i + batch);
+    const done = await Promise.all(slice.map((text) => translateOne(text).catch(() => text)));
+    translations.push(...done);
+  }
+  res.json({ translations });
+});
+
 if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`Club running at http://localhost:${PORT}`);

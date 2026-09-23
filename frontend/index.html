@@ -3,39 +3,46 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Arsenal</title>
+    <title data-i18n="titleHome">MyClub</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Source+Sans+3:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/styles.css?v=brand" />
+    <link rel="stylesheet" href="/styles.css?v=datestrip2" />
   </head>
   <body class="is-public landing-page">
+    <header class="glass-topbar">
+      <div class="glass-topbar-inner">
+        <div class="date-strip" id="date-strip" role="list"></div>
+        <div class="glass-topbar-tools">
+          <div class="glass-topbar-lang">
+            <label for="language-select" data-i18n="langLabel">Language</label>
+            <select id="language-select" data-i18n="langLabel" data-i18n-attr="aria-label"></select>
+          </div>
+        </div>
+      </div>
+    </header>
     <div class="brand-stack">
-      <time id="gregorian-date"></time>
       <a class="club-logo" href="/" aria-label="Arsenal">
         <img src="/logo-arsenal.png" alt="Arsenal" width="72" height="72" />
       </a>
     </div>
-    <div class="lang-picker compact">
-      <select id="language-select" aria-label="Language"></select>
-    </div>
     <main class="hero-center">
       <div class="slogan-box">
         <h1 class="hero-copy">
-          <span>Build Your Club</span>
-          <span>Win Tournament</span>
-          <span>Earn Cash Prizes</span>
+          <span data-i18n="heroBuild">Build Your Club</span>
+          <span data-i18n="heroWin">Win Tournament</span>
+          <span data-i18n="heroPrize">Earn Cash Prizes</span>
         </h1>
       </div>
-      <a class="login-btn" href="/login.html">Login</a>
+      <a class="login-btn glass-login" href="/login.html" data-i18n="login">Login</a>
     </main>
     <script src="/languages.js"></script>
-    <script src="/i18n.js"></script>
+    <script src="/i18n.js?v=datestrip2"></script>
     <script src="/calendars.js"></script>
-    <script src="/chrome.js?v=brand"></script>
+    <script src="/chrome.js?v=datestrip2"></script>
     <script>
       initChrome();
     </script>

@@ -3,144 +3,150 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Club dashboard</title>
+    <title data-i18n="titleClub">Club dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Source+Sans+3:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/styles.css?v=awaysvc" />
+    <link rel="stylesheet" href="/styles.css?v=datestrip2" />
   </head>
   <body class="dash-page">
-    <div class="date-bar">
-      <time id="gregorian-date"></time>
-      <span class="date-convert">
-        <label for="calendar-select">Convert</label>
-        <select id="calendar-select"></select>
-      </span>
-      <p id="converted-date"></p>
-    </div>
-    <div class="lang-picker">
-      <label for="language-select">Language</label>
-      <select id="language-select"></select>
-    </div>
+    <header class="glass-topbar">
+      <div class="glass-topbar-inner">
+        <div class="date-strip" id="date-strip" role="list"></div>
+        <div class="glass-topbar-tools">
+          <div class="glass-topbar-date">
+            <span class="date-convert">
+              <label for="calendar-select" data-i18n="convertLabel">Convert</label>
+              <select id="calendar-select"></select>
+            </span>
+            <p id="converted-date"></p>
+          </div>
+          <div class="glass-topbar-lang">
+            <label for="language-select" data-i18n="langLabel">Language</label>
+            <select id="language-select"></select>
+          </div>
+        </div>
+      </div>
+    </header>
 
     <div class="shell" id="setup-shell">
       <section class="panel setup-panel" id="setup-panel" hidden>
-        <p class="tagline">Club creation</p>
+        <p class="tagline" data-i18n="clubCreation">Club creation</p>
         <ol class="setup-progress" aria-label="Setup steps">
-          <li id="progress-1" class="is-active">1. Club name</li>
-          <li id="progress-2">2. Manager</li>
-          <li id="progress-3">3. Squad</li>
+          <li id="progress-1" class="is-active" data-i18n="stepClub">1. Club name</li>
+          <li id="progress-2" data-i18n="stepManager">2. Manager</li>
+          <li id="progress-3" data-i18n="stepSquad">3. Squad</li>
         </ol>
 
         <div class="setup-stage" id="step-club">
-          <h1>Choose your club name</h1>
-          <p class="lede">Create a new identity or select a prepared club name, then customize it.</p>
+          <h1 data-i18n="chooseClubName">Choose your club name</h1>
+          <p class="lede" data-i18n="chooseClubLede">Create a new identity or select a prepared club name, then customize it.</p>
           <div class="mode-toggle" role="tablist">
-            <button type="button" class="is-on" id="mode-create" aria-pressed="true">Create name</button>
-            <button type="button" id="mode-select" aria-pressed="false">Select name</button>
+            <button type="button" class="is-on" id="mode-create" aria-pressed="true" data-i18n="createName">Create name</button>
+            <button type="button" id="mode-select" aria-pressed="false" data-i18n="selectName">Select name</button>
           </div>
           <div id="create-block">
-            <label for="club-name">Club name</label>
-            <input id="club-name" name="name" type="text" maxlength="40" placeholder="e.g. Northgate Athletic" />
-            <label for="club-short">Short name</label>
+            <label for="club-name" data-i18n="clubName">Club name</label>
+            <input id="club-name" name="name" type="text" maxlength="40" data-i18n="clubPlaceholder" />
+            <label for="club-short" data-i18n="shortName">Short name</label>
             <input id="club-short" name="shortName" type="text" maxlength="4" placeholder="NGA" />
-            <p class="hint">Three or four letters for kits, fixtures, and the board.</p>
+            <p class="hint" data-i18n="shortHint">Three or four letters for kits, fixtures, and the board.</p>
           </div>
           <div id="select-block" hidden>
-            <p class="hint">Select a club, then you can still edit the name.</p>
+            <p class="hint" data-i18n="selectClubHint">Select a club, then you can still edit the name.</p>
             <div class="name-grid" id="name-grid"></div>
           </div>
-          <button type="button" class="continue-btn" id="to-manager">Continue</button>
+          <button type="button" class="continue-btn" id="to-manager" data-i18n="continue">Continue</button>
         </div>
 
         <div class="setup-stage" id="step-manager" hidden>
-          <h1>Choose your manager name</h1>
-          <p class="lede">Enter the name of the manager who will take charge of the dressing room.</p>
-          <label for="manager-name">Manager / coach name</label>
+          <h1 data-i18n="chooseManager">Choose your manager name</h1>
+          <p class="lede" data-i18n="chooseManagerLede">Enter the name of the manager who will take charge of the dressing room.</p>
+          <label for="manager-name" data-i18n="managerName">Manager / coach name</label>
           <input id="manager-name" name="manager" type="text" maxlength="40" placeholder="e.g. Elena Voss" />
           <p class="setup-club-preview" id="setup-club-preview"></p>
           <div class="setup-nav">
-            <button type="button" class="ghost-btn" id="back-club">Back</button>
-            <button type="button" class="continue-btn" id="finish-setup">Continue to squad</button>
+            <button type="button" class="ghost-btn" id="back-club" data-i18n="back">Back</button>
+            <button type="button" class="continue-btn" id="finish-setup" data-i18n="continueSquad">Continue to squad</button>
           </div>
         </div>
 
         <div class="setup-stage" id="step-squad" hidden>
-          <h1>Build your squad</h1>
-          <p class="lede">Sign players from the market, then set a starting XI and substitutes on the club board.</p>
+          <h1 data-i18n="buildSquad">Build your squad</h1>
+          <p class="lede" data-i18n="buildSquadLede">Sign players from the market, then set a starting XI and substitutes on the club board.</p>
           <p class="hint" id="squad-hint"></p>
           <div id="setup-market" class="card-grid"></div>
           <div class="setup-nav">
-            <button type="button" class="ghost-btn" id="back-manager">Back</button>
-            <button type="button" class="continue-btn" id="to-board">Enter dashboard</button>
+            <button type="button" class="ghost-btn" id="back-manager" data-i18n="back">Back</button>
+            <button type="button" class="continue-btn" id="to-board" data-i18n="enterDashboard">Enter dashboard</button>
           </div>
         </div>
       </section>
     </div>
 
     <div class="dash" id="club-wrap" hidden>
-      <button type="button" class="dash-toggle" id="dash-toggle" aria-expanded="false">Menu</button>
+      <button type="button" class="dash-toggle" id="dash-toggle" aria-expanded="false" data-i18n="menu">Menu</button>
       <div class="dash-scrim" id="dash-scrim" hidden></div>
 
       <aside class="dash-rail" id="dash-rail" aria-label="Club menu">
-        <p class="side-menu-title">Club</p>
+        <p class="side-menu-title" data-i18n="navClub">Club</p>
         <nav>
           <ul>
             <li>
               <a href="#club" data-tab="club" class="is-on">
                 <span class="nav-ico" aria-hidden="true">◆</span>
-                Club
+                <span data-i18n="navClub">Club</span>
               </a>
             </li>
             <li>
               <a href="#players" data-tab="players">
                 <span class="nav-ico" aria-hidden="true">♟</span>
-                Players
+                <span data-i18n="navPlayers">Players</span>
               </a>
             </li>
             <li>
               <a href="#stadium" data-tab="stadium">
                 <span class="nav-ico" aria-hidden="true">▣</span>
-                Stadium
+                <span data-i18n="navStadium">Stadium</span>
               </a>
             </li>
             <li>
               <a href="#academy" data-tab="academy">
                 <span class="nav-ico" aria-hidden="true">◈</span>
-                Academy
+                <span data-i18n="navAcademy">Academy</span>
               </a>
             </li>
             <li>
               <a href="#transfer" data-tab="transfer">
                 <span class="nav-ico" aria-hidden="true">⇄</span>
-                Transfer
+                <span data-i18n="navTransfer">Transfer</span>
               </a>
             </li>
             <li>
               <a href="#cup" data-tab="cup">
                 <span class="nav-ico" aria-hidden="true">♔</span>
-                Cup
+                <span data-i18n="navCup">Cup</span>
               </a>
             </li>
             <li>
               <a href="#pm" data-tab="pm">
                 <span class="nav-ico" aria-hidden="true">✉</span>
-                PM
+                <span data-i18n="navPm">PM</span>
                 <span class="pm-dot" id="pm-dot" hidden></span>
               </a>
             </li>
             <li>
               <a href="#store" data-tab="store">
                 <span class="nav-ico" aria-hidden="true">◈</span>
-                Store
+                <span data-i18n="navStore">Store</span>
               </a>
             </li>
           </ul>
         </nav>
-        <button type="button" class="side-logout" id="logout-btn">Log out</button>
+        <button type="button" class="side-logout" id="logout-btn" data-i18n="logOut">Log out</button>
       </aside>
 
       <main class="dash-main">
@@ -148,29 +154,29 @@
           <p class="tagline" id="manager-line"></p>
           <h1 id="club-title"></h1>
           <ul class="stats dash-stats">
-            <li><span>Funds</span> <strong id="stat-funds"></strong></li>
-            <li><span>Skill</span> <strong id="stat-skill"></strong></li>
-            <li><span>Fans</span> <strong id="stat-fans"></strong></li>
-            <li><span>Record</span> <strong id="stat-record"></strong></li>
+            <li><span data-i18n="funds">Funds</span> <strong id="stat-funds"></strong></li>
+            <li><span data-i18n="skill">Skill</span> <strong id="stat-skill"></strong></li>
+            <li><span data-i18n="fans">Fans</span> <strong id="stat-fans"></strong></li>
+            <li><span data-i18n="record">Record</span> <strong id="stat-record"></strong></li>
           </ul>
         </header>
 
         <section class="dash-panel hq-panel" id="tab-panel-club">
           <nav class="hq-subnav" aria-label="Club">
-            <button type="button" class="is-on" data-hq="overview">Overview</button>
-            <button type="button" data-hq="logo">Club logo</button>
-            <button type="button" data-hq="kits">Kit</button>
+            <button type="button" class="is-on" data-hq="overview" data-i18n="overview">Overview</button>
+            <button type="button" data-hq="logo" data-i18n="clubLogo">Club logo</button>
+            <button type="button" data-hq="kits" data-i18n="kit">Kit</button>
           </nav>
 
           <div class="hq-pane" id="hq-pane-overview">
             <header class="ov-identity">
               <div class="ov-logo" id="ov-logo" aria-hidden="true"></div>
               <div>
-                <p class="hq-kicker pl-kicker">Club</p>
+                <p class="hq-kicker pl-kicker" data-i18n="navClub">Club</p>
                 <h2 class="ov-name" id="ov-name"></h2>
               </div>
               <div class="ov-morale" id="ov-morale">
-                <p class="hq-kicker pl-kicker">Team morale</p>
+                <p class="hq-kicker pl-kicker" data-i18n="teamMorale">Team morale</p>
                 <p class="ov-morale-score"><strong id="ov-morale-value">0</strong><span>/100</span></p>
               </div>
             </header>
@@ -182,19 +188,19 @@
 
             <div class="ov-split">
               <article class="glass-card ov-table-card">
-                <h3 id="ov-league-title">League table</h3>
+                <h3 id="ov-league-title" data-i18n="leagueTable">League table</h3>
                 <div class="hq-ledger-wrap">
                   <table class="hq-ledger ov-table" id="ov-table">
                     <thead>
                       <tr>
-                        <th>Pos</th>
-                        <th>Club</th>
-                        <th>P</th>
-                        <th>W</th>
-                        <th>D</th>
-                        <th>L</th>
-                        <th>GD</th>
-                        <th>Pts</th>
+                        <th data-i18n="pos">Pos</th>
+                        <th data-i18n="thClub">Club</th>
+                        <th data-i18n="thP">P</th>
+                        <th data-i18n="thW">W</th>
+                        <th data-i18n="thD">D</th>
+                        <th data-i18n="thL">L</th>
+                        <th data-i18n="thGd">GD</th>
+                        <th data-i18n="thPts">Pts</th>
                       </tr>
                     </thead>
                     <tbody></tbody>
@@ -202,114 +208,114 @@
                 </div>
               </article>
               <article class="glass-card ov-next">
-                <h3>Next match</h3>
+                <h3 data-i18n="nextMatch">Next match</h3>
                 <p class="ov-next-comp" id="ov-next-comp"></p>
                 <p class="ov-next-vs" id="ov-next-vs"></p>
                 <p class="hint" id="ov-next-meta"></p>
                 <div class="ov-next-kit">
-                  <p class="hq-kicker pl-kicker" id="ov-next-kit-label">Match kit</p>
+                  <p class="hq-kicker pl-kicker" id="ov-next-kit-label" data-i18n="matchKit">Match kit</p>
                   <div id="ov-next-kit"></div>
                 </div>
               </article>
             </div>
 
-            <h3 class="section-title">Team squad</h3>
+            <h3 class="section-title" data-i18n="teamSquad">Team squad</h3>
             <div class="ov-squad" id="ov-squad"></div>
           </div>
 
           <div class="hq-pane" id="hq-pane-logo" hidden>
-            <p class="lede">Design the club crest. Colours and motif save with the club look.</p>
+            <p class="lede" data-i18n="crestLede">Design the club crest. Colours and motif save with the club look.</p>
             <div class="hq-designer">
               <div class="hq-preview-stage" id="logo-preview"></div>
               <article class="glass-card">
-                <h3>Crest studio</h3>
-                <label for="crest-primary">Primary</label>
+                <h3 data-i18n="crestStudio">Crest studio</h3>
+                <label for="crest-primary" data-i18n="primary">Primary</label>
                 <input id="crest-primary" type="color" />
-                <label for="crest-secondary">Secondary</label>
+                <label for="crest-secondary" data-i18n="secondary">Secondary</label>
                 <input id="crest-secondary" type="color" />
-                <label for="crest-accent">Accent</label>
+                <label for="crest-accent" data-i18n="accent">Accent</label>
                 <input id="crest-accent" type="color" />
-                <label for="crest-motif">Motif</label>
+                <label for="crest-motif" data-i18n="motif">Motif</label>
                 <select id="crest-motif">
-                  <option value="cannon">Cannon</option>
-                  <option value="ball">Football</option>
-                  <option value="shield">Shield</option>
-                  <option value="star">Star</option>
+                  <option value="cannon" data-i18n="cannon">Cannon</option>
+                  <option value="ball" data-i18n="ball">Football</option>
+                  <option value="shield" data-i18n="shield">Shield</option>
+                  <option value="star" data-i18n="star">Star</option>
                 </select>
-                <button type="button" id="save-look">Save club look</button>
+                <button type="button" id="save-look" data-i18n="saveClubLook">Save club look</button>
               </article>
             </div>
           </div>
 
           <div class="hq-pane" id="hq-pane-kits" hidden>
-            <p class="lede">Home, away, and goalkeeper kits. Tune colours, pattern, number, and cut.</p>
+            <p class="lede" data-i18n="kitsLede">Home, away, and goalkeeper kits. Tune colours, pattern, number, and cut.</p>
             <div class="hq-kit-studio" id="kit-studio"></div>
-            <button type="button" class="hq-save-kits" id="save-kits">Save kits</button>
+            <button type="button" class="hq-save-kits" id="save-kits" data-i18n="saveKits">Save kits</button>
           </div>
         </section>
 
         <section class="dash-panel pl-panel" id="tab-panel-players" hidden>
           <nav class="hq-subnav" aria-label="Players">
-            <button type="button" class="is-on" data-pl="first">First team</button>
-            <button type="button" data-pl="academy">Academy team</button>
+            <button type="button" class="is-on" data-pl="first" data-i18n="firstTeam">First team</button>
+            <button type="button" data-pl="academy" data-i18n="academyTeam">Academy team</button>
           </nav>
 
           <div class="hq-pane" id="pl-pane-first">
             <header class="pl-head">
               <div>
-                <p class="hq-kicker pl-kicker">Squad room</p>
-                <h2 class="section-title">First team</h2>
+                <p class="hq-kicker pl-kicker" data-i18n="squadRoom">Squad room</p>
+                <h2 class="section-title" data-i18n="firstTeam">First team</h2>
                 <p class="lede" id="pl-formation-label"></p>
               </div>
             </header>
             <div class="pl-ready-grid" id="pl-ready"></div>
             <div class="office-grid">
               <article class="glass-card">
-                <h3>Lineup · 1-4-4-2</h3>
-                <p class="hint">Select a pitch slot, then a player of that position.</p>
+                <h3 data-i18n="lineupTitle">Lineup · 1-4-4-2</h3>
+                <p class="hint" data-i18n="lineupHint">Select a pitch slot, then a player of that position.</p>
                 <div class="pitch pl-formation" id="pitch"></div>
-                <h4 class="section-title">Substitutes</h4>
+                <h4 class="section-title" data-i18n="substitutes">Substitutes</h4>
                 <div class="sub-row" id="sub-row"></div>
-                <button type="button" id="save-lineup">Save lineup</button>
+                <button type="button" id="save-lineup" data-i18n="saveLineup">Save lineup</button>
               </article>
               <article class="glass-card">
-                <h3>Training</h3>
-                <p class="hint">Run a collective session or an individual extra. Costs coins from the club books.</p>
-                <label for="pl-focus">Session focus</label>
+                <h3 data-i18n="training">Training</h3>
+                <p class="hint" data-i18n="trainingHint">Run a collective session or an individual extra. Costs coins from the club books.</p>
+                <label for="pl-focus" data-i18n="sessionFocus">Session focus</label>
                 <select id="pl-focus">
-                  <option value="general">General</option>
-                  <option value="fitness">Fitness</option>
-                  <option value="tactics">Tactics</option>
-                  <option value="attacking">Attacking</option>
-                  <option value="defending">Defending</option>
+                  <option value="general" data-i18n="general">General</option>
+                  <option value="fitness" data-i18n="fitness">Fitness</option>
+                  <option value="tactics" data-i18n="tactics">Tactics</option>
+                  <option value="attacking" data-i18n="attacking">Attacking</option>
+                  <option value="defending" data-i18n="defending">Defending</option>
                 </select>
-                <label for="pl-individual">Individual extra</label>
+                <label for="pl-individual" data-i18n="individualExtra">Individual extra</label>
                 <select id="pl-individual">
-                  <option value="">Whole squad · 22 coins</option>
+                  <option value="" data-i18n="wholeSquad">Whole squad · 22 coins</option>
                 </select>
-                <button type="button" id="pl-train-btn">Run first-team session</button>
+                <button type="button" id="pl-train-btn" data-i18n="runFirstSession">Run first-team session</button>
                 <div class="actions tight hq-match-ops">
-                  <button type="button" id="train-btn">Train squad</button>
-                  <button type="button" id="match-btn">Play match</button>
+                  <button type="button" id="train-btn" data-i18n="train">Train squad</button>
+                  <button type="button" id="match-btn" data-i18n="play">Play match</button>
                 </div>
               </article>
             </div>
-            <h3 class="section-title">Pick a player</h3>
+            <h3 class="section-title" data-i18n="pickPlayer">Pick a player</h3>
             <div id="assign-grid" class="card-grid"></div>
-            <h3 class="section-title">Squad list</h3>
+            <h3 class="section-title" data-i18n="squadList">Squad list</h3>
             <div class="hq-ledger-wrap">
               <table class="hq-ledger pl-table" id="pl-squad">
                 <thead>
                   <tr>
-                    <th>Player</th>
-                    <th>Pos</th>
-                    <th>Ovr</th>
-                    <th>Status</th>
-                    <th>Cond</th>
-                    <th>Fit</th>
-                    <th>Morale</th>
-                    <th>Form</th>
-                    <th>Training</th>
+                    <th data-i18n="thPlayer">Player</th>
+                    <th data-i18n="thPos">Pos</th>
+                    <th data-i18n="thOvr">Ovr</th>
+                    <th data-i18n="thStatus">Status</th>
+                    <th data-i18n="thCond">Cond</th>
+                    <th data-i18n="thFit">Fit</th>
+                    <th data-i18n="thMorale">Morale</th>
+                    <th data-i18n="thForm">Form</th>
+                    <th data-i18n="thTraining">Training</th>
                   </tr>
                 </thead>
                 <tbody></tbody>
@@ -320,37 +326,37 @@
           <div class="hq-pane" id="pl-pane-academy" hidden>
             <header class="pl-head">
               <div>
-                <p class="hq-kicker pl-kicker">Youth wing</p>
-                <h2 class="section-title">Academy team</h2>
+                <p class="hq-kicker pl-kicker" data-i18n="youthWing">Youth wing</p>
+                <h2 class="section-title" data-i18n="academyTeam">Academy team</h2>
                 <p class="lede" id="pl-ac-meta"></p>
               </div>
             </header>
             <div class="pl-ready-grid" id="pl-ac-ready"></div>
             <article class="glass-card">
-              <h3>Academy training</h3>
-              <p class="hint">Group work for the youth side. Individual development still lives on the Academy board.</p>
-              <label for="pl-ac-focus">Activity</label>
+              <h3 data-i18n="academyTraining">Academy training</h3>
+              <p class="hint" data-i18n="academyTrainHint">Group work for the youth side. Individual development still lives on the Academy board.</p>
+              <label for="pl-ac-focus" data-i18n="activity">Activity</label>
               <select id="pl-ac-focus">
-                <option value="development">Development</option>
-                <option value="fitness">Fitness</option>
-                <option value="technical">Technical</option>
-                <option value="tactical">Tactical</option>
+                <option value="development" data-i18n="development">Development</option>
+                <option value="fitness" data-i18n="fitness">Fitness</option>
+                <option value="technical" data-i18n="technical">Technical</option>
+                <option value="tactical" data-i18n="tactical">Tactical</option>
               </select>
-              <button type="button" id="pl-ac-train-btn">Run academy session · 14 coins</button>
+              <button type="button" id="pl-ac-train-btn" data-i18n="runAcademySession">Run academy session · 14 coins</button>
             </article>
-            <h3 class="section-title">Academy players</h3>
+            <h3 class="section-title" data-i18n="academyPlayers">Academy players</h3>
             <div class="hq-ledger-wrap">
               <table class="hq-ledger pl-table" id="pl-academy">
                 <thead>
                   <tr>
-                    <th>Player</th>
-                    <th>Pos</th>
-                    <th>Age</th>
-                    <th>Ovr</th>
-                    <th>Pot</th>
-                    <th>Cond</th>
-                    <th>Fit</th>
-                    <th>Progress</th>
+                    <th data-i18n="thPlayer">Player</th>
+                    <th data-i18n="thPos">Pos</th>
+                    <th data-i18n="thAge">Age</th>
+                    <th data-i18n="thOvr">Ovr</th>
+                    <th data-i18n="thPot">Pot</th>
+                    <th data-i18n="thCond">Cond</th>
+                    <th data-i18n="thFit">Fit</th>
+                    <th data-i18n="thProgress">Progress</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -362,8 +368,8 @@
 
         <section class="dash-panel" id="tab-panel-stadium" hidden>
           <nav class="hq-subnav" aria-label="Stadium">
-            <button type="button" class="is-on" data-st="capacity">Stadium capacity</button>
-            <button type="button" data-st="services">Services</button>
+            <button type="button" class="is-on" data-st="capacity" data-i18n="stadiumCapacity">Stadium capacity</button>
+            <button type="button" data-st="services" data-i18n="services">Services</button>
           </nav>
           <div class="hq-pane" id="st-pane-capacity">
             <figure class="ov-stadium st-photo">
@@ -374,13 +380,13 @@
               <p class="hq-kicker pl-kicker" id="stad-level-label">Level 1</p>
               <p class="st-cap-num" id="stad-cap"></p>
               <p class="hint" id="stad-cap-meta"></p>
-              <button type="button" id="stad-upgrade">Expand capacity</button>
+              <button type="button" id="stad-upgrade" data-i18n="expandCapacity">Expand capacity</button>
             </article>
           </div>
           <div class="hq-pane" id="st-pane-services" hidden>
             <article class="glass-card st-away-copy">
-              <h3>Away match services</h3>
-              <p class="lede">
+              <h3 data-i18n="awayServices">Away match services</h3>
+              <p class="lede" data-i18n="awayServicesLede">
                 These services are built for away matches. They help more of your own supporters travel,
                 gather, and stay with the club on the road — so the team is more likely to feel stronger
                 backing when playing away from home.
@@ -391,46 +397,46 @@
         </section>
 
         <section class="dash-panel" id="tab-panel-academy" hidden>
-          <h2 class="section-title">Football academy</h2>
-          <p class="lede">Upgrade the youth system, develop prospects, and promote them to the first team.</p>
+          <h2 class="section-title" data-i18n="footballAcademy">Football academy</h2>
+          <p class="lede" data-i18n="academyLede">Upgrade the youth system, develop prospects, and promote them to the first team.</p>
           <ul class="academy-meters">
-            <li>Academy level <strong id="ac-level"></strong> <button type="button" data-upgrade="level">Upgrade</button></li>
-            <li>Facilities <strong id="ac-facilities"></strong> <button type="button" data-upgrade="facilities">Upgrade</button></li>
-            <li>Coaches <strong id="ac-coaches"></strong> <button type="button" data-upgrade="coaches">Upgrade</button></li>
+            <li><span data-i18n="academyLevel">Academy level</span> <strong id="ac-level"></strong> <button type="button" data-upgrade="level" data-i18n="upgrade">Upgrade</button></li>
+            <li><span data-i18n="facilities">Facilities</span> <strong id="ac-facilities"></strong> <button type="button" data-upgrade="facilities" data-i18n="upgrade">Upgrade</button></li>
+            <li><span data-i18n="coaches">Coaches</span> <strong id="ac-coaches"></strong> <button type="button" data-upgrade="coaches" data-i18n="upgrade">Upgrade</button></li>
           </ul>
-          <button type="button" id="youth-intake">Hold youth intake</button>
-          <h2 class="section-title">Youth players</h2>
+          <button type="button" id="youth-intake" data-i18n="youthIntake">Hold youth intake</button>
+          <h2 class="section-title" data-i18n="youthPlayers">Youth players</h2>
           <div id="youth-grid" class="card-grid"></div>
         </section>
 
         <section class="dash-panel" id="tab-panel-transfer" hidden>
-          <h2 class="section-title">Transfer room</h2>
-          <p class="lede">Buy from the market, sell first-team names, and keep the wage bill honest.</p>
-          <h3 class="section-title">First team</h3>
+          <h2 class="section-title" data-i18n="transferRoom">Transfer room</h2>
+          <p class="lede" data-i18n="transferLede">Buy from the market, sell first-team names, and keep the wage bill honest.</p>
+          <h3 class="section-title" data-i18n="firstTeam">First team</h3>
           <div id="roster-grid" class="card-grid"></div>
-          <h3 class="section-title">Transfer market</h3>
+          <h3 class="section-title" data-i18n="transferMarket">Transfer market</h3>
           <div id="market-grid" class="card-grid"></div>
         </section>
 
         <section class="dash-panel" id="tab-panel-cup" hidden>
-          <h2 class="section-title">Cup</h2>
+          <h2 class="section-title" data-i18n="cup">Cup</h2>
           <article class="glass-card">
             <h3 id="cup-name"></h3>
             <p class="metric" id="cup-round"></p>
             <p class="hint" id="cup-record"></p>
-            <button type="button" id="cup-play">Play cup tie</button>
+            <button type="button" id="cup-play" data-i18n="playCup">Play cup tie</button>
           </article>
         </section>
 
         <section class="dash-panel" id="tab-panel-pm" hidden>
-          <h2 class="section-title">Private messages</h2>
-          <p class="lede">Board notes, scouting, and office mail.</p>
+          <h2 class="section-title" data-i18n="privateMessages">Private messages</h2>
+          <p class="lede" data-i18n="pmLede">Board notes, scouting, and office mail.</p>
           <div id="inbox-list" class="inbox-list"></div>
         </section>
 
         <section class="dash-panel" id="tab-panel-store" hidden>
-          <h2 class="section-title">Club store</h2>
-          <p class="lede">Kits, lights, scouting, and sponsor deals.</p>
+          <h2 class="section-title" data-i18n="clubStore">Club store</h2>
+          <p class="lede" data-i18n="storeLede">Kits, lights, scouting, and sponsor deals.</p>
           <div id="store-grid" class="store-grid"></div>
         </section>
       </main>
@@ -438,9 +444,9 @@
     <p id="status" class="status live-status" role="status"></p>
 
     <script src="/languages.js"></script>
-    <script src="/i18n.js"></script>
+    <script src="/i18n.js?v=datestrip2"></script>
     <script src="/calendars.js"></script>
-    <script src="/chrome.js?v=highbury"></script>
-    <script src="/club.js?v=awaysvc"></script>
+    <script src="/chrome.js?v=datestrip2"></script>
+    <script src="/club.js?v=lang1"></script>
   </body>
 </html>

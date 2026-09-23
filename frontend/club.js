@@ -25,28 +25,28 @@ const PRESET_CLUBS = [
 const DASH_TABS = ["club", "players", "stadium", "academy", "transfer", "cup", "pm", "store"];
 const HQ_PANES = ["overview", "logo", "kits"];
 const KIT_DEFS = [
-  { id: "home", label: "Home kit" },
-  { id: "away", label: "Away kit" },
-  { id: "gkHome", label: "GK home" },
-  { id: "gkAway", label: "GK away" },
+  { id: "home", labelKey: "homeKit" },
+  { id: "away", labelKey: "awayKit" },
+  { id: "gkHome", labelKey: "gkHome" },
+  { id: "gkAway", labelKey: "gkAway" },
 ];
 const STAFF_CATALOG = [
-  { id: "scout", role: "Chief scout", cost: 80, bonus: "Finds extra youth at intake." },
-  { id: "physio", role: "Physio", cost: 60, bonus: "Keeps the medical room moving." },
-  { id: "analyst", role: "Match analyst", cost: 70, bonus: "Slight edge on match and cup days." },
+  { id: "scout", roleKey: "scout", cost: 80, bonusKey: "scoutBonus" },
+  { id: "physio", roleKey: "physio", cost: 60, bonusKey: "physioBonus" },
+  { id: "analyst", roleKey: "analyst", cost: 70, bonusKey: "analystBonus" },
 ];
 const STADIUM_SERVICES = [
-  { id: "hospitality", name: "Away hospitality", blurb: "Tickets, welcome, and a base for travelling supporters." },
-  { id: "catering", name: "Away catering", blurb: "Food and drink for the away end so fans stay with the team." },
-  { id: "medical", name: "Away medical", blurb: "Care for supporters on the road, not only the squad." },
-  { id: "media", name: "Away coverage", blurb: "Travel updates and match reports that rally the away following." },
-  { id: "security", name: "Away stewards", blurb: "Safe travel and a louder, better organised away section." },
+  { id: "hospitality", nameKey: "hospitality", blurbKey: "hospitalityBlurb" },
+  { id: "catering", nameKey: "catering", blurbKey: "cateringBlurb" },
+  { id: "medical", nameKey: "medical", blurbKey: "medicalBlurb" },
+  { id: "media", nameKey: "media", blurbKey: "mediaBlurb" },
+  { id: "security", nameKey: "security", blurbKey: "securityBlurb" },
 ];
 const STORE_CATALOG = [
-  { id: "kit", name: "Home kit drop", cost: 45, blurb: "A new strip. +40 fans." },
-  { id: "lights", name: "Floodlight rig", cost: 90, blurb: "Night matches. Stadium condition +8." },
-  { id: "network", name: "Scout network", cost: 55, blurb: "One extra academy prospect." },
-  { id: "sponsor", name: "Sleeve sponsor", cost: 35, blurb: "Immediate board cash. +$70." },
+  { id: "kit", nameKey: "storeKit", cost: 45, blurbKey: "storeKitBlurb" },
+  { id: "lights", nameKey: "storeLights", cost: 90, blurbKey: "storeLightsBlurb" },
+  { id: "network", nameKey: "storeNetwork", cost: 55, blurbKey: "storeNetworkBlurb" },
+  { id: "sponsor", nameKey: "storeSponsor", cost: 35, blurbKey: "storeSponsorBlurb" },
 ];
 const PITCH_ORDER = ["ST", "CM", "CB", "GK"];
 const MAX_SUBS = 7;
@@ -71,12 +71,8 @@ let hqPane = "overview";
 let playersPane = "first";
 let stadiumPane = "capacity";
 
-function copy(key, fallback) {
-  if (typeof t !== "function") {
-    return fallback;
-  }
-  const value = t(key);
-  return !value || value === key ? fallback : value;
+function copy(key, vars) {
+  return t(key, vars);
 }
 
 function setStatus(message) {
@@ -124,13 +120,15 @@ function showStep(which) {
   if (which === "manager") {
     const name = clubNameInput.value.trim();
     const short = (clubShortInput.value.trim() || shortFromName(name)).toUpperCase();
-    previewEl.textContent = name ? `${name} (${short}) is ready for a manager.` : "";
+    previewEl.textContent = name ? copy("managerReady", { name, short }) : "";
     window.setTimeout(() => managerNameInput.focus(), 40);
   }
   if (which === "squad") {
     renderMarket(document.getElementById("setup-market"), true);
-    document.getElementById("squad-hint").textContent =
-      `${(club.players || []).length} signed · funds $${club.funds}. Sign a balanced group, then continue.`;
+    document.getElementById("squad-hint").textContent = copy("signedFunds", {
+      n: (club.players || []).length,
+      funds: club.funds,
+    });
   }
 }
 
@@ -142,13 +140,13 @@ function renderPrizes(prizes) {
   if (!prizes.length) {
     const empty = document.createElement("p");
     empty.className = "empty";
-    empty.textContent = copy("noPrizes", "No prizes yet. Win a match to start the cabinet.");
+    empty.textContent = copy("noPrizes");
     prizeList.append(empty);
     return;
   }
   for (const prize of prizes) {
     const item = document.createElement("li");
-    item.textContent = copy(PRIZE_KEYS[prize.id], prize.title);
+    item.textContent = PRIZE_KEYS[prize.id] ? copy(PRIZE_KEYS[prize.id]) : prize.title;
     prizeList.append(item);
   }
 }
@@ -168,21 +166,25 @@ function cardEl(player, options) {
   title.append(pos, name);
   const meta = document.createElement("p");
   meta.className = "card-meta";
-  meta.textContent = `${player.nationality} · Age ${player.age} · OVR ${player.rating}`;
+  meta.textContent = copy("playerMeta", {
+    nat: player.nationality,
+    age: player.age,
+    ovr: player.rating,
+  });
   const stats = document.createElement("ul");
   stats.className = "card-stats";
   const rows = [
-    ["Value", `$${player.value}`],
-    ["Wage", `$${player.salary}/wk`],
-    ["Pot.", player.potential],
-    ["Pace", player.pace],
-    ["Pass", player.passing],
-    ["Shot", player.shooting],
-    ["Def", player.defending],
-    ["Stam", player.stamina],
+    [copy("value"), `$${player.value}`],
+    [copy("wage"), copy("wageWk", { n: player.salary })],
+    [copy("pot"), player.potential],
+    [copy("pace"), player.pace],
+    [copy("pass"), player.passing],
+    [copy("shot"), player.shooting],
+    [copy("def"), player.defending],
+    [copy("stam"), player.stamina],
   ];
   if (player.position === "GK") {
-    rows.push(["Hands", player.handling]);
+    rows.push([copy("hands"), player.handling]);
   }
   for (const [label, value] of rows) {
     const li = document.createElement("li");
@@ -221,7 +223,7 @@ function renderMarket(container, signing) {
   if (!list.length) {
     const empty = document.createElement("p");
     empty.className = "empty";
-    empty.textContent = "The market is empty.";
+    empty.textContent = copy("marketEmpty");
     container.append(empty);
     return;
   }
@@ -230,8 +232,8 @@ function renderMarket(container, signing) {
     container.append(
       cardEl(player, {
         actions: signing
-          ? [{ label: `Sign · $${fee}`, run: (item) => signPlayer(item.id) }]
-          : [{ label: `Sign · $${fee}`, run: (item) => signPlayer(item.id) }],
+          ? [{ label: copy("signFee", { n: fee }), run: (item) => signPlayer(item.id) }]
+          : [{ label: copy("signFee", { n: fee }), run: (item) => signPlayer(item.id) }],
       })
     );
   }
@@ -254,7 +256,7 @@ function renderAssignGrid() {
   if (!club.players?.length) {
     const empty = document.createElement("p");
     empty.className = "empty";
-    empty.textContent = "Sign players in Transfer, then place them here.";
+    empty.textContent = copy("placeFromTransfer");
     grid.append(empty);
   }
 }
@@ -269,7 +271,7 @@ function renderRoster() {
         onSelect: (item) => assignPlayer(item),
         actions: [
           {
-            label: `Sell · $${Math.max(6, Math.round(player.value * 0.55))}`,
+            label: copy("sellFee", { n: Math.max(6, Math.round(player.value * 0.55)) }),
             run: (item) => sellPlayer(item.id),
           },
         ],
@@ -279,7 +281,7 @@ function renderRoster() {
   if (!club.players?.length) {
     const empty = document.createElement("p");
     empty.className = "empty";
-    empty.textContent = "No first-team players yet. Sign from the market.";
+    empty.textContent = copy("noFirstTeamSign");
     grid.append(empty);
   }
 }
@@ -332,7 +334,7 @@ function renderSubs() {
     if (selectedSlot && selectedSlot.pos === "SUB" && selectedSlot.index === i) {
       slot.classList.add("is-on");
     }
-    slot.textContent = player ? player.name.split(" ").pop() : `Sub ${i + 1}`;
+    slot.textContent = player ? player.name.split(" ").pop() : copy("subN", { n: i + 1 });
     slot.addEventListener("click", () => {
       selectedSlot = { pos: "SUB", index: i };
       renderPitch();
@@ -345,14 +347,14 @@ function renderSubs() {
 
 function assignPlayer(player) {
   if (!selectedSlot) {
-    setStatus("Select a pitch or substitute slot first.");
+    setStatus(copy("signThenPlace"));
     return;
   }
   if (!club.lineup) {
     club.lineup = emptyLineup();
   }
   if (selectedSlot.pos !== "SUB" && player.position !== selectedSlot.pos) {
-    setStatus(`${player.name} plays ${player.position}, not ${selectedSlot.pos}.`);
+    setStatus(copy("playsNot", { name: player.name, pos: player.position, slot: selectedSlot.pos }));
     return;
   }
   const used = new Set(
@@ -360,7 +362,7 @@ function assignPlayer(player) {
   );
   used.delete(club.lineup[selectedSlot.pos]?.[selectedSlot.index]);
   if (used.has(player.id)) {
-    setStatus("That player is already in the lineup.");
+    setStatus(copy("alreadyLineup"));
     return;
   }
   if (selectedSlot.pos === "SUB") {
@@ -376,7 +378,7 @@ function assignPlayer(player) {
   renderPitch();
   renderSubs();
   renderAssignGrid();
-  setStatus(`${player.name} placed in ${selectedSlot.pos}. Save the lineup when ready.`);
+  setStatus(copy("placedIn", { name: player.name, pos: selectedSlot.pos }));
 }
 
 function renderAcademy() {
@@ -389,8 +391,8 @@ function renderAcademy() {
     grid.append(
       cardEl(player, {
         actions: [
-          { label: "Develop · $16", run: (item) => academyAct("/api/academy/develop", item.id) },
-          { label: "Promote", run: (item) => academyAct("/api/academy/promote", item.id) },
+          { label: copy("developFee"), run: (item) => academyAct("/api/academy/develop", item.id) },
+          { label: copy("promote"), run: (item) => academyAct("/api/academy/promote", item.id) },
         ],
       })
     );
@@ -398,6 +400,7 @@ function renderAcademy() {
   if (!club.academy.youth?.length) {
     const empty = document.createElement("p");
     empty.className = "empty";
+    empty.textContent = copy("noAcademyYouth");
     grid.append(empty);
   }
 }
@@ -421,12 +424,12 @@ function avgPlayerStat(list, key) {
 function lineupRole(playerId) {
   const lu = club.lineup || emptyLineup();
   if ((lu.GK || []).includes(playerId) || (lu.CB || []).includes(playerId) || (lu.CM || []).includes(playerId) || (lu.ST || []).includes(playerId)) {
-    return "XI";
+    return copy("xi");
   }
   if ((lu.SUB || []).includes(playerId)) {
-    return "Sub";
+    return copy("sub");
   }
-  return "Squad";
+  return copy("squad");
 }
 
 function setPlayersPane(name) {
@@ -460,15 +463,17 @@ function renderPlayers() {
   const ready = document.getElementById("pl-ready");
   ready.innerHTML = "";
   ready.append(
-    meterEl("Fitness", fitness),
-    meterEl("Morale", morale),
-    meterEl("Form", form),
-    meterEl("Readiness", readiness)
+    meterEl(copy("fitnessLabel"), fitness),
+    meterEl(copy("moraleLabel"), morale),
+    meterEl(copy("formLabel"), form),
+    meterEl(copy("readiness"), readiness)
   );
 
   const starters = [...(club.lineup?.GK || []), ...(club.lineup?.CB || []), ...(club.lineup?.CM || []), ...(club.lineup?.ST || [])].filter(Boolean).length;
-  document.getElementById("pl-formation-label").textContent =
-    `Formation 1-4-4-2 · ${starters}/11 in the XI · ${squad.length} in the first team`;
+  document.getElementById("pl-formation-label").textContent = copy("formationLine", {
+    starters,
+    n: squad.length,
+  });
 
   const focus = document.getElementById("pl-focus");
   const individual = document.getElementById("pl-individual");
@@ -477,11 +482,15 @@ function renderPlayers() {
   }
   if (individual && document.activeElement !== individual) {
     const current = individual.value;
-    individual.innerHTML = `<option value="">Whole squad · 22 coins</option>`;
+    individual.innerHTML = "";
+    const all = document.createElement("option");
+    all.value = "";
+    all.textContent = copy("wholeSquad");
+    individual.append(all);
     for (const player of squad) {
       const opt = document.createElement("option");
       opt.value = player.id;
-      opt.textContent = `${player.name} · 12 coins`;
+      opt.textContent = copy("playerExtra", { name: player.name });
       individual.append(opt);
     }
     if ([...individual.options].some((opt) => opt.value === current)) {
@@ -492,7 +501,7 @@ function renderPlayers() {
   const body = document.querySelector("#pl-squad tbody");
   body.innerHTML = "";
   if (!squad.length) {
-    body.innerHTML = `<tr><td colspan="9">No first-team players yet. Sign names in Transfer.</td></tr>`;
+    body.innerHTML = `<tr><td colspan="9">${copy("noFirstTeamTransfer")}</td></tr>`;
   } else {
     const sorted = squad.slice().sort((a, b) => (a.position > b.position ? 1 : a.position < b.position ? -1 : b.rating - a.rating));
     for (const player of sorted) {
@@ -510,9 +519,11 @@ function renderPlayers() {
   const acCond = avgPlayerStat(youth, "condition");
   const acReady = document.getElementById("pl-ac-ready");
   acReady.innerHTML = "";
-  acReady.append(meterEl("Academy fitness", acFit), meterEl("Condition", acCond), meterEl("Training progress", acProg));
-  document.getElementById("pl-ac-meta").textContent =
-    `${youth.length} youth players · academy level ${club.academy?.level || 1}`;
+  acReady.append(meterEl(copy("academyFitness"), acFit), meterEl(copy("condition"), acCond), meterEl(copy("trainingProgress"), acProg));
+  document.getElementById("pl-ac-meta").textContent = copy("acMeta", {
+    n: youth.length,
+    level: club.academy?.level || 1,
+  });
   const acFocus = document.getElementById("pl-ac-focus");
   if (acFocus && document.activeElement !== acFocus) {
     acFocus.value = club.training?.academyFocus || "development";
@@ -520,13 +531,13 @@ function renderPlayers() {
   const acBody = document.querySelector("#pl-academy tbody");
   acBody.innerHTML = "";
   if (!youth.length) {
-    acBody.innerHTML = `<tr><td colspan="9">No academy players. Hold an intake on the Academy board.</td></tr>`;
+    acBody.innerHTML = `<tr><td colspan="9">${copy("noAcademyPlayers")}</td></tr>`;
   } else {
     for (const player of youth) {
       const tr = document.createElement("tr");
       const develop = document.createElement("button");
       develop.type = "button";
-      develop.textContent = "Develop";
+      develop.textContent = copy("develop");
       develop.addEventListener("click", () => academyAct("/api/academy/develop", player.id));
       tr.innerHTML = `<td></td><td>${player.position}</td><td>${player.age}</td><td>${player.rating}</td>
         <td>${player.potential}</td><td>${player.condition}</td><td>${player.fitness}</td>
@@ -689,41 +700,64 @@ function paintLookPreviews() {
 
 function ensureKitStudio() {
   const studio = document.getElementById("kit-studio");
-  if (!studio || studio.dataset.ready === "1") {
+  if (!studio) {
     return;
   }
-  studio.innerHTML = KIT_DEFS.map(
-    (def) => `<article class="glass-card kit-card" id="kit-card-${def.id}">
-      <h3>${def.label}</h3>
+  if (studio.dataset.ready !== "1") {
+    studio.innerHTML = KIT_DEFS.map(
+      (def) => `<article class="glass-card kit-card" id="kit-card-${def.id}">
+      <h3></h3>
       <div class="kit-preview" id="kit-preview-${def.id}"></div>
-      <label>Primary <input data-f="primary" type="color" /></label>
-      <label>Secondary <input data-f="secondary" type="color" /></label>
-      <label>Trim <input data-f="trim" type="color" /></label>
-      <label>Number <input data-f="number" type="text" maxlength="2" /></label>
-      <label>Pattern
+      <label><span data-kit-lab="primary"></span> <input data-f="primary" type="color" /></label>
+      <label><span data-kit-lab="secondary"></span> <input data-f="secondary" type="color" /></label>
+      <label><span data-kit-lab="trim"></span> <input data-f="trim" type="color" /></label>
+      <label><span data-kit-lab="number"></span> <input data-f="number" type="text" maxlength="2" /></label>
+      <label><span data-kit-lab="pattern"></span>
         <select data-f="pattern">
-          <option value="solid">Solid</option>
-          <option value="stripes">Stripes</option>
-          <option value="hoops">Hoops</option>
-          <option value="halves">Halves</option>
-          <option value="sash">Sash</option>
+          <option value="solid"></option>
+          <option value="stripes"></option>
+          <option value="hoops"></option>
+          <option value="halves"></option>
+          <option value="sash"></option>
         </select>
       </label>
-      <label>Style
+      <label><span data-kit-lab="style"></span>
         <select data-f="style">
-          <option value="classic">Classic</option>
-          <option value="modern">Modern</option>
-          <option value="retro">Retro</option>
+          <option value="classic"></option>
+          <option value="modern"></option>
+          <option value="retro"></option>
         </select>
       </label>
     </article>`
-  ).join("");
-  studio.dataset.ready = "1";
-  studio.addEventListener("input", () => {
-    lookDirty = true;
-    readLookForm();
-    paintLookPreviews();
-  });
+    ).join("");
+    studio.dataset.ready = "1";
+    studio.addEventListener("input", () => {
+      lookDirty = true;
+      readLookForm();
+      paintLookPreviews();
+    });
+  }
+  for (const def of KIT_DEFS) {
+    const root = document.getElementById(`kit-card-${def.id}`);
+    if (!root) {
+      continue;
+    }
+    root.querySelector("h3").textContent = copy(def.labelKey);
+    root.querySelector("[data-kit-lab=primary]").textContent = copy("primary");
+    root.querySelector("[data-kit-lab=secondary]").textContent = copy("secondary");
+    root.querySelector("[data-kit-lab=trim]").textContent = copy("trim");
+    root.querySelector("[data-kit-lab=number]").textContent = copy("number");
+    root.querySelector("[data-kit-lab=pattern]").textContent = copy("pattern");
+    root.querySelector("[data-kit-lab=style]").textContent = copy("style");
+    const pattern = root.querySelector("[data-f=pattern]");
+    [...pattern.options].forEach((opt) => {
+      opt.textContent = copy(opt.value);
+    });
+    const style = root.querySelector("[data-f=style]");
+    [...style.options].forEach((opt) => {
+      opt.textContent = copy(opt.value);
+    });
+  }
 }
 
 function fillLookForm() {
@@ -760,21 +794,21 @@ function fillLookForm() {
 function renderOverview() {
   document.getElementById("ov-name").textContent = club.shortName
     ? `${club.name} · ${club.shortName}`
-    : club.name || "Your club";
+    : club.name || copy("yourClub");
   const morale = avgPlayerStat(club.players || [], "morale");
   document.getElementById("ov-morale-value").textContent = String(morale);
   const stad = club.stadium || {};
   const photo = document.getElementById("ov-stad-photo");
   photo.src = stadiumPhoto(stad.level);
-  photo.alt = stad.name || "Home stadium";
+  photo.alt = stad.name || copy("homeStadium");
   document.getElementById("ov-stad-caption").textContent = stad.name
-    ? `${stad.name} · ${Number(stad.capacity || 0).toLocaleString()} capacity`
-    : "Home stadium";
+    ? copy("namedCapacity", { name: stad.name, n: Number(stad.capacity || 0).toLocaleString() })
+    : copy("homeStadium");
 
   const league = club.league || {};
   document.getElementById("ov-league-title").textContent = league.name
     ? `${league.name} · ${league.season}`
-    : "League table";
+    : copy("leagueTable");
   const body = document.querySelector("#ov-table tbody");
   body.innerHTML = "";
   for (const row of league.table || []) {
@@ -791,19 +825,22 @@ function renderOverview() {
   const next = league.nextMatch;
   if (!next) {
     document.getElementById("ov-next-comp").textContent = "";
-    document.getElementById("ov-next-vs").textContent = "No fixture scheduled.";
+    document.getElementById("ov-next-vs").textContent = copy("noFixture");
     document.getElementById("ov-next-meta").textContent = "";
-    document.getElementById("ov-next-kit-label").textContent = "Match kit";
+    document.getElementById("ov-next-kit-label").textContent = copy("matchKit");
   } else {
     const when = new Date(next.kickoff);
     document.getElementById("ov-next-comp").textContent = next.competition;
     document.getElementById("ov-next-vs").textContent = next.home
       ? `${club.name} vs ${next.opponent}`
       : `${next.opponent} vs ${club.name}`;
-    document.getElementById("ov-next-meta").textContent =
-      `${next.home ? "Home" : "Away"} · ${next.venue} · ${when.toLocaleString()}`;
+    document.getElementById("ov-next-meta").textContent = copy("homeAwayMeta", {
+      side: next.home ? copy("home") : copy("away"),
+      venue: next.venue,
+      when: when.toLocaleString(),
+    });
     document.getElementById("ov-next-kit-label").textContent =
-      next.kit === "away" ? "Away kit" : "Home kit";
+      next.kit === "away" ? copy("awayKit") : copy("homeKit");
   }
 
   const squadEl = document.getElementById("ov-squad");
@@ -812,7 +849,7 @@ function renderOverview() {
   if (!squad.length) {
     const empty = document.createElement("p");
     empty.className = "empty";
-    empty.textContent = "No first-team players yet.";
+    empty.textContent = copy("noFirstTeam");
     squadEl.append(empty);
   } else {
     const sorted = squad.slice().sort((a, b) => (a.position > b.position ? 1 : a.position < b.position ? -1 : b.rating - a.rating));
@@ -825,7 +862,7 @@ function renderOverview() {
       const name = document.createElement("strong");
       name.textContent = player.name;
       const meta = document.createElement("span");
-      meta.textContent = `OVR ${player.rating} · ${lineupRole(player.id)}`;
+      meta.textContent = copy("ovrRole", { ovr: player.rating, role: lineupRole(player.id) });
       card.append(pos, name, meta);
       squadEl.append(card);
     }
@@ -873,24 +910,27 @@ function renderStadium() {
   const stad = club.stadium || {};
   const level = Math.max(1, Math.min(10, stad.level || 1));
   const cap = stadiumCapacityForLevel(level);
-  document.getElementById("stad-level-label").textContent = `Level ${level} / 10`;
+  document.getElementById("stad-level-label").textContent = copy("levelOf", { n: level });
   document.getElementById("stad-cap").textContent =
-    cap === 0 ? "0 spectators" : `${cap.toLocaleString()} spectators`;
+    cap === 0 ? copy("zeroSpectators") : copy("spectators", { n: cap.toLocaleString() });
   const photo = document.getElementById("stad-photo");
   photo.src = stadiumPhoto(level);
-  photo.alt = `Level ${level} stadium, ${cap.toLocaleString()} spectators`;
+  photo.alt = copy("stadAlt", { n: level, cap: cap.toLocaleString() });
   document.getElementById("stad-photo-cap").textContent =
-    cap === 0 ? "Empty ground · no spectators" : `${cap.toLocaleString()} spectator capacity`;
+    cap === 0 ? copy("emptyGround") : copy("spectatorCapacity", { n: cap.toLocaleString() });
   const btn = document.getElementById("stad-upgrade");
   if (level >= 10) {
-    document.getElementById("stad-cap-meta").textContent = "Maximum capacity reached.";
+    document.getElementById("stad-cap-meta").textContent = copy("maxCapacity");
     btn.hidden = true;
   } else {
     const next = level + 1;
     const nextCap = stadiumCapacityForLevel(next);
     const cost = 40 + level * 55;
-    document.getElementById("stad-cap-meta").textContent =
-      `Next: level ${next} · ${nextCap.toLocaleString()} spectators · ${cost} coins`;
+    document.getElementById("stad-cap-meta").textContent = copy("nextLevel", {
+      n: next,
+      cap: nextCap.toLocaleString(),
+      cost,
+    });
     btn.hidden = false;
   }
   const grid = document.getElementById("stad-services");
@@ -901,15 +941,15 @@ function renderStadium() {
     const card = document.createElement("article");
     card.className = "staff-card";
     const h = document.createElement("h4");
-    h.textContent = item.name;
+    h.textContent = copy(item.nameKey);
     const p = document.createElement("p");
-    p.textContent = `${item.blurb} · Level ${level} / 5`;
+    p.textContent = copy("serviceLevel", { blurb: copy(item.blurbKey), level });
     card.append(h, p);
     if (level < 5) {
       const cost = 30 + level * 35;
       const btn = document.createElement("button");
       btn.type = "button";
-      btn.textContent = `Upgrade · ${cost} coins`;
+      btn.textContent = copy("upgradeCoins", { cost });
       btn.addEventListener("click", () =>
         act("/api/stadium/service", { serviceId: item.id }).catch((error) => setStatus(error.message))
       );
@@ -922,9 +962,9 @@ function renderStadium() {
 
 function renderCup() {
   const cup = club.cup || {};
-  document.getElementById("cup-name").textContent = cup.name || "Regional Cup";
-  document.getElementById("cup-round").textContent = cup.round || "Round of 32";
-  document.getElementById("cup-record").textContent = `Cup record ${cup.wins || 0}–${cup.losses || 0}`;
+  document.getElementById("cup-name").textContent = cup.name || copy("regionalCup");
+  document.getElementById("cup-round").textContent = cup.round || copy("round32");
+  document.getElementById("cup-record").textContent = copy("cupRecord", { w: cup.wins || 0, l: cup.losses || 0 });
 }
 
 function renderInbox() {
@@ -940,7 +980,7 @@ function renderInbox() {
   if (!mail.length) {
     const empty = document.createElement("p");
     empty.className = "empty";
-    empty.textContent = "No messages yet.";
+    empty.textContent = copy("noMessages");
     list.append(empty);
     return;
   }
@@ -958,7 +998,7 @@ function renderInbox() {
     if (!note.read) {
       const btn = document.createElement("button");
       btn.type = "button";
-      btn.textContent = "Mark read";
+      btn.textContent = copy("markRead");
       btn.addEventListener("click", () =>
         act("/api/inbox/read", { id: note.id }).catch((error) => setStatus(error.message))
       );
@@ -975,13 +1015,13 @@ function renderStore() {
     const card = document.createElement("article");
     card.className = "glass-card";
     const h = document.createElement("h3");
-    h.textContent = item.name;
+    h.textContent = copy(item.nameKey);
     const p = document.createElement("p");
     p.className = "hint";
-    p.textContent = item.blurb;
+    p.textContent = copy(item.blurbKey);
     const btn = document.createElement("button");
     btn.type = "button";
-    btn.textContent = `Buy · $${item.cost}`;
+    btn.textContent = copy("buyFee", { n: item.cost });
     btn.addEventListener("click", () =>
       act("/api/store/buy", { itemId: item.id }).catch((error) => setStatus(error.message))
     );
@@ -994,8 +1034,8 @@ function renderOps() {
   document.getElementById("club-title").textContent = club.shortName
     ? `${club.name} · ${club.shortName}`
     : club.name;
-  document.getElementById("manager-line").textContent = `Manager: ${club.managerName}`;
-  document.getElementById("stat-funds").textContent = `${club.funds} coins`;
+  document.getElementById("manager-line").textContent = copy("managerLine", { name: club.managerName });
+  document.getElementById("stat-funds").textContent = copy("coins", { n: club.funds });
   document.getElementById("stat-skill").textContent = club.skill;
   document.getElementById("stat-fans").textContent = club.fans;
   document.getElementById("stat-record").textContent = `${club.wins}-${club.draws}-${club.losses}`;
@@ -1060,10 +1100,10 @@ function renderClub(data) {
 }
 
 async function loadClub() {
-  setStatus("Loading club…");
+  setStatus(copy("loadingClub"));
   const data = await request("/api/club");
   renderClub(data);
-  setStatus(setupComplete(data) && !inSetupFlow ? "Match day operations are open." : "");
+  setStatus(setupComplete(data) && !inSetupFlow ? copy("opsOpen") : "");
 }
 
 async function act(path, body) {
@@ -1074,8 +1114,10 @@ async function act(path, body) {
   club = result.club;
   if (inSetupFlow) {
     renderMarket(document.getElementById("setup-market"), true);
-    document.getElementById("squad-hint").textContent =
-      `${(club.players || []).length} signed · funds $${club.funds}.`;
+    document.getElementById("squad-hint").textContent = copy("signedFundsShort", {
+      n: (club.players || []).length,
+      funds: club.funds,
+    });
   } else if (setupComplete(club)) {
     setupPanel.hidden = true;
     if (setupShell) {
@@ -1085,7 +1127,7 @@ async function act(path, body) {
     document.body.classList.add("is-dashboard");
     renderOps();
   }
-  setStatus(result.log || "Update saved.");
+  setStatus(result.log || copy("updateSaved"));
 }
 
 async function signPlayer(playerId) {
@@ -1195,9 +1237,14 @@ async function sellPlayer(playerId) {
 }
 
 window.onLanguageChange = function onLanguageChange() {
-  if (club) {
-    renderClub(club);
+  if (!club) {
+    return;
   }
+  if (setupComplete(club) && !inSetupFlow) {
+    renderOps();
+    return;
+  }
+  renderClub(club);
 };
 
 initChrome();
@@ -1217,7 +1264,7 @@ document.getElementById("mode-select").addEventListener("click", () => setMode("
 document.getElementById("to-manager").addEventListener("click", () => {
   const name = clubNameInput.value.trim();
   if (name.length < 3) {
-    setStatus("Enter or select a club name of at least 3 characters.");
+    setStatus(copy("enterClubChars"));
     return;
   }
   if (!clubShortInput.value.trim()) {
@@ -1236,11 +1283,11 @@ async function saveManagerAndContinue() {
   const managerName = managerNameInput.value.trim();
   if (name.length < 3) {
     showStep("club");
-    setStatus("Enter or select a club name of at least 3 characters.");
+    setStatus(copy("enterClubChars"));
     return;
   }
   if (managerName.length < 2) {
-    setStatus("Enter your manager name.");
+    setStatus(copy("enterManager"));
     managerNameInput.focus();
     return;
   }
@@ -1252,9 +1299,11 @@ async function saveManagerAndContinue() {
     inSetupFlow = true;
     club = data;
     showStep("squad");
-    document.getElementById("squad-hint").textContent =
-      `${(club.players || []).length} signed · funds $${club.funds}.`;
-    setStatus(`${data.name} is under ${data.managerName}. Now build the squad.`);
+    document.getElementById("squad-hint").textContent = copy("signedFundsShort", {
+      n: (club.players || []).length,
+      funds: club.funds,
+    });
+    setStatus(copy("underManager", { club: data.name, manager: data.managerName }));
   } catch (error) {
     setStatus(error.message);
   }
@@ -1273,7 +1322,7 @@ managerNameInput.addEventListener("keydown", (event) => {
 document.getElementById("to-board").addEventListener("click", () => {
   inSetupFlow = false;
   renderClub(club);
-  setStatus("Set your starting XI, then open the academy when you are ready.");
+  setStatus(copy("setXi"));
 });
 
 document.getElementById("save-lineup").addEventListener("click", () => {

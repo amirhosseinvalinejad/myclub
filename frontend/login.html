@@ -4,32 +4,44 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title data-i18n="titleLogin">Login</title>
-    <link rel="stylesheet" href="/styles.css?v=nomenu" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Source+Sans+3:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/styles.css?v=datestrip2" />
   </head>
   <body class="is-public login-page">
-    <div class="date-bar">
-      <time id="gregorian-date"></time>
-      <span class="date-convert">
-        <label for="calendar-select" data-i18n="convertLabel">Convert</label>
-        <select id="calendar-select"></select>
-      </span>
-      <p id="converted-date"></p>
-    </div>
-    <div class="lang-picker">
-      <label for="language-select" data-i18n="langLabel">Language</label>
-      <select id="language-select"></select>
-    </div>
+    <header class="glass-topbar">
+      <div class="glass-topbar-inner">
+        <div class="date-strip" id="date-strip" role="list"></div>
+        <div class="glass-topbar-tools">
+          <div class="glass-topbar-date">
+            <span class="date-convert">
+              <label for="calendar-select" data-i18n="convertLabel">Convert</label>
+              <select id="calendar-select"></select>
+            </span>
+            <p id="converted-date"></p>
+          </div>
+          <div class="glass-topbar-lang">
+            <label for="language-select" data-i18n="langLabel">Language</label>
+            <select id="language-select"></select>
+          </div>
+        </div>
+      </div>
+    </header>
     <div class="shell">
       <section class="panel auth-panel">
         <p class="tagline" data-i18n="account">Account</p>
-        <h1 data-i18n="login">Login</h1>
+        <h1 class="glass-login glass-login-title" data-i18n="login">Login</h1>
         <form id="login-form" autocomplete="on">
           <label for="login-email" data-i18n="email">Email address</label>
           <input id="login-email" name="email" type="email" required maxlength="120" autocomplete="email" />
           <label for="login-password" data-i18n="password">Password</label>
           <input id="login-password" name="password" type="password" required minlength="6" autocomplete="current-password" />
           <p class="auth-extra"><a href="/forgot.html" data-i18n="forgotPassword">Forgot password?</a></p>
-          <button type="submit" data-i18n="login">Login</button>
+          <button class="glass-login" type="submit" data-i18n="login">Login</button>
         </form>
         <p id="auth-status" class="status" role="status"></p>
         <p class="auth-back">
@@ -40,9 +52,9 @@
       </section>
     </div>
     <script src="/languages.js"></script>
-    <script src="/i18n.js"></script>
+    <script src="/i18n.js?v=datestrip2"></script>
     <script src="/calendars.js"></script>
-    <script src="/chrome.js?v=highbury"></script>
-    <script src="/auth.js"></script>
+    <script src="/chrome.js?v=datestrip2"></script>
+    <script src="/auth.js?v=lang1"></script>
   </body>
 </html>
