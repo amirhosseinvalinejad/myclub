@@ -198,9 +198,9 @@ body {
   right: auto;
   z-index: 30;
   width: auto;
-  max-width: min(292px, calc(100vw - 20px));
-  padding: 7px;
-  border-radius: 14px;
+  max-width: min(196px, calc(100vw - 20px));
+  padding: 5px;
+  border-radius: 12px;
   background: rgba(6, 8, 10, 0.52);
   backdrop-filter: blur(18px) saturate(1.25);
   -webkit-backdrop-filter: blur(18px) saturate(1.25);
@@ -212,14 +212,14 @@ body {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 6px;
+  gap: 5px;
 }
 
 .date-strip {
   display: flex;
-  gap: 5px;
+  gap: 3px;
   width: 100%;
-  max-width: 274px;
+  max-width: 186px;
   overflow-x: auto;
   overflow-y: hidden;
   padding-bottom: 1px;
@@ -231,16 +231,16 @@ body {
 }
 
 .date-strip-day {
-  flex: 0 0 82px;
-  width: 82px;
+  flex: 0 0 56px;
+  width: 56px;
   scroll-snap-align: start;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
   gap: 1px;
-  padding: 5px 6px 6px;
-  border-radius: 10px;
+  padding: 4px 5px 5px;
+  border-radius: 8px;
   text-align: left;
   color: rgba(244, 246, 245, 0.82);
   background: rgba(255, 255, 255, 0.05);
@@ -249,8 +249,8 @@ body {
 }
 
 .date-strip-day.is-today {
-  flex: 0 0 100px;
-  width: 100px;
+  flex: 0 0 74px;
+  width: 74px;
   color: #fff;
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0.12));
   border-color: rgba(255, 255, 255, 0.55);
@@ -267,9 +267,9 @@ body {
 }
 
 .date-strip-rel {
-  font-size: 0.46rem;
+  font-size: 0.42rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
   color: rgba(244, 246, 245, 0.7);
   line-height: 1.1;
@@ -282,13 +282,13 @@ body {
 .date-strip-meta {
   display: flex;
   align-items: baseline;
-  gap: 5px;
+  gap: 4px;
   min-width: 0;
   width: 100%;
 }
 
 .date-strip-date {
-  font-size: 0.7rem;
+  font-size: 0.64rem;
   font-weight: 700;
   letter-spacing: 0.01em;
   line-height: 1.15;
@@ -297,16 +297,16 @@ body {
 
 .date-strip-time {
   margin: 0;
-  font-size: 0.62rem;
+  font-size: 0.56rem;
   font-weight: 600;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
   font-variant-numeric: tabular-nums;
   color: #fff;
   white-space: nowrap;
 }
 
 .date-strip-week {
-  font-size: 0.52rem;
+  font-size: 0.48rem;
   font-weight: 600;
   line-height: 1.15;
   letter-spacing: 0.01em;
@@ -320,29 +320,29 @@ body {
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  gap: 3px;
+  gap: 2px;
 }
 
 .glass-topbar-lang label {
   margin: 0;
   color: rgba(244, 246, 245, 0.72);
   font-family: "Source Sans 3", "Segoe UI", sans-serif;
-  font-size: 0.56rem;
+  font-size: 0.52rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .glass-topbar select {
   width: 100%;
   max-width: none;
-  padding: 5px 8px;
+  padding: 4px 6px;
   border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 8px;
+  border-radius: 7px;
   background: rgba(255, 255, 255, 0.08);
   color: #f4f6f5;
   font-family: "Source Sans 3", "Segoe UI", sans-serif;
-  font-size: 0.74rem;
+  font-size: 0.68rem;
 }
 
 .glass-topbar select option {
@@ -409,12 +409,13 @@ h1.glass-login-title {
 }
 
 .club-logo img {
-  width: 80px;
-  height: 80px;
+  width: 92px;
+  height: 92px;
   display: block;
   border-radius: 50%;
   background: #fff;
   box-shadow: 0 8px 20px rgba(16, 24, 18, 0.18);
+  object-fit: contain;
 }
 
 .club-logo span {
@@ -1863,7 +1864,7 @@ button:hover {
 
 @media (max-width: 960px) {
   .glass-topbar {
-    max-width: min(292px, calc(100vw - 20px));
+    max-width: min(196px, calc(100vw - 20px));
   }
 
   .slogan-box {
