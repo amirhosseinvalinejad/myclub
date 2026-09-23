@@ -69,18 +69,37 @@ function currentLocale() {
   return document.documentElement.lang || "en";
 }
 
-function currentCalendar() {
-  const calendarSelect = document.getElementById("calendar-select");
-  if (!calendarSelect) {
-    return "gregory";
-  }
-  return (calendarSelect.value || "gregory|Most countries").split("|")[0];
-}
-
 function startOfLocalDay(date) {
   const next = new Date(date);
   next.setHours(0, 0, 0, 0);
   return next;
+}
+
+function localDayKey(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+function formatLocalTime(date, locale) {
+  return new Intl.DateTimeFormat(locale, {
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(date);
+}
+
+function tickTimes() {
+  const now = new Date();
+  if (tickTimes.dayKey && tickTimes.dayKey !== localDayKey(now)) {
+    updateDates();
+    return;
+  }
+  const locale = currentLocale();
+  const clock = formatLocalTime(now, locale);
+  document.querySelectorAll(".date-strip-time").forEach((el) => {
+    el.textContent = clock;
+  });
 }
 
 function renderDateStrip() {
@@ -89,7 +108,9 @@ function renderDateStrip() {
     return;
   }
   const locale = currentLocale();
-  const today = startOfLocalDay(new Date());
+  const now = new Date();
+  const today = startOfLocalDay(now);
+  tickTimes.dayKey = localDayKey(now);
   const weekdayFmt = new Intl.DateTimeFormat(locale, { weekday: "long" });
   const dateFmt = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short" });
   const fullFmt = new Intl.DateTimeFormat(locale, {
@@ -98,6 +119,7 @@ function renderDateStrip() {
     month: "long",
     year: "numeric",
   });
+  const clock = formatLocalTime(now, locale);
   root.setAttribute("aria-label", t("dateStripLabel"));
   root.replaceChildren();
   for (let offset = -10; offset <= 10; offset += 1) {
@@ -106,7 +128,11 @@ function renderDateStrip() {
     const cell = document.createElement("div");
     cell.className = "date-strip-day";
     cell.setAttribute("role", "listitem");
-    cell.title = fullFmt.format(day);
+    if (offset === 0) {
+      cell.title = `${fullFmt.format(day)} · ${clock}`;
+    } else {
+      cell.title = fullFmt.format(day);
+    }
     if (offset === -1) {
       cell.classList.add("is-yesterday");
     }
@@ -124,19 +150,30 @@ function renderDateStrip() {
       mark.textContent = t(relKey);
       cell.append(mark);
     }
+    const meta = document.createElement("span");
+    meta.className = "date-strip-meta";
     const dateEl = document.createElement("span");
     dateEl.className = "date-strip-date";
     dateEl.textContent = dateFmt.format(day);
+    meta.append(dateEl);
+    if (offset === 0) {
+      const timeEl = document.createElement("time");
+      timeEl.className = "date-strip-time";
+      timeEl.dateTime = now.toISOString();
+      timeEl.textContent = clock;
+      meta.append(timeEl);
+    }
     const weekEl = document.createElement("span");
     weekEl.className = "date-strip-week";
     weekEl.textContent = weekdayFmt.format(day);
-    cell.append(dateEl, weekEl);
+    cell.append(meta, weekEl);
     root.append(cell);
   }
-  const todayCell = root.querySelector(".is-today");
-  if (todayCell) {
-    const left = todayCell.offsetLeft - root.clientWidth / 2 + todayCell.offsetWidth / 2;
-    root.scrollLeft = Math.max(0, left);
+  const yesterday = root.querySelector(".is-yesterday");
+  if (yesterday) {
+    requestAnimationFrame(() => {
+      root.scrollLeft = yesterday.offsetLeft;
+    });
   }
 }
 
@@ -154,35 +191,17 @@ function scheduleDateRollover() {
   }, Math.max(1000, next.getTime() - now.getTime()));
 }
 
-function updateDates() {
-  const now = new Date();
-  const locale = currentLocale();
-  const gregorianDateEl = document.getElementById("gregorian-date");
-  const convertedDateEl = document.getElementById("converted-date");
-  if (gregorianDateEl) {
-    gregorianDateEl.dateTime = now.toISOString().slice(0, 10);
-    const slim = Boolean(document.querySelector(".glass-topbar"));
-    gregorianDateEl.textContent = slim ? formatSlimDate(now, locale) : formatGregorian(now, locale);
+function startClock() {
+  if (startClock.timer) {
+    window.clearInterval(startClock.timer);
   }
-  if (convertedDateEl) {
-    const converted = formatConverted(now, currentCalendar(), locale);
-    convertedDateEl.textContent = converted;
-    convertedDateEl.hidden = !converted;
-  }
-  renderDateStrip();
+  tickTimes();
+  startClock.timer = window.setInterval(tickTimes, 1000);
 }
 
-function restoreCalendar() {
-  const calendarSelect = document.getElementById("calendar-select");
-  if (!calendarSelect) {
-    return;
-  }
-  const saved = localStorage.getItem(CAL_KEY) || "gregory";
-  const match = [...calendarSelect.options].find((option) =>
-    option.value.startsWith(`${saved}|`)
-  );
-  calendarSelect.value = match ? match.value : "gregory|Most countries";
-  updateDates();
+function updateDates() {
+  renderDateStrip();
+  tickTimes();
 }
 
 async function request(url, options = {}) {
@@ -230,21 +249,15 @@ function initChrome() {
     document.body.classList.add("is-public");
   }
   const languageSelect = document.getElementById("language-select");
-  const calendarSelect = document.getElementById("calendar-select");
   if (languageSelect) {
     fillLanguageSelect();
     restoreLanguage();
     languageSelect.addEventListener("change", () => {
       applyLanguage(languageSelect.value.split("|")[0]);
     });
-  }
-  if (calendarSelect) {
-    fillCalendarSelect(calendarSelect);
-    restoreCalendar();
-    calendarSelect.addEventListener("change", () => {
-      localStorage.setItem(CAL_KEY, currentCalendar());
-      updateDates();
-    });
+  } else {
+    updateDates();
   }
   scheduleDateRollover();
+  startClock();
 }

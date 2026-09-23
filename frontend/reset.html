@@ -4,24 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title data-i18n="titleReset">Set new password</title>
-    <link rel="stylesheet" href="/styles.css?v=datestrip2" />
+    <link rel="stylesheet" href="/styles.css?v=glass4" />
   </head>
   <body class="is-public">
     <header class="glass-topbar">
-      <div class="glass-topbar-inner">
+      <div class="glass-topbar-cluster">
         <div class="date-strip" id="date-strip" role="list"></div>
-        <div class="glass-topbar-tools">
-          <div class="glass-topbar-date">
-            <span class="date-convert">
-              <label for="calendar-select" data-i18n="convertLabel">Convert</label>
-              <select id="calendar-select"></select>
-            </span>
-            <p id="converted-date"></p>
-          </div>
-          <div class="glass-topbar-lang">
-            <label for="language-select" data-i18n="langLabel">Language</label>
-            <select id="language-select"></select>
-          </div>
+        <div class="glass-topbar-lang">
+          <label for="language-select" data-i18n="langLabel">Language</label>
+          <select id="language-select" data-i18n="langLabel" data-i18n-attr="aria-label"></select>
         </div>
       </div>
     </header>
@@ -47,9 +38,9 @@
       </section>
     </div>
     <script src="/languages.js"></script>
-    <script src="/i18n.js?v=datestrip2"></script>
+    <script src="/i18n.js?v=glass4"></script>
     <script src="/calendars.js"></script>
-    <script src="/chrome.js?v=datestrip2"></script>
+    <script src="/chrome.js?v=glass4"></script>
     <script src="/auth.js?v=lang1"></script>
   </body>
 </html>
